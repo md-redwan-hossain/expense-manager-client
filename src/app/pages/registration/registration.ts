@@ -18,7 +18,6 @@ import { Router } from '@angular/router';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Registration {
-  // reactive disable logic
   readonly fb = inject(FormBuilder);
   readonly httpClient = inject(HttpClient);
   readonly router = inject(Router);
@@ -33,23 +32,18 @@ export class Registration {
         validators: [Validators.required, Validators.minLength(6), Validators.maxLength(60)],
       }),
       agreeWithTermsAndCondition: this.fb.control<boolean>(false, {
-        validators: [Validators.required],
+        validators: [Validators.requiredTrue],
       }),
     },
-    { validators: [this.confirmPasswordValidator], updateOn: 'submit' },
+    { validators: [this.confirmPasswordValidator], updateOn: 'submit' }
   );
 
   async onSubmit() {
     const formValues = this.form.getRawValue();
 
-    if (!formValues.agreeWithTermsAndCondition) {
-      this.form.controls.agreeWithTermsAndCondition.setErrors({ notAgreed: true });
-      this.form.controls.agreeWithTermsAndCondition.updateValueAndValidity();
-    }
-
     const parsed = SignupSchema.parse(formValues);
     const response = await firstValueFrom(
-      this.httpClient.post('', { ...parsed }, { observe: 'response' }),
+      this.httpClient.post('', { ...parsed }, { observe: 'response' })
     );
 
     if (response.status === HttpStatusCode.Conflict) {
