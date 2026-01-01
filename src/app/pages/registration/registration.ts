@@ -7,12 +7,27 @@ import {
   ValidationErrors,
   Validators,
 } from '@angular/forms';
-import { SignupSchema } from './registration.models';
-import { firstValueFrom } from 'rxjs';
 import { Router } from '@angular/router';
+import { ReactiveFormErrorMessageComponent } from 'ngx-extra';
+import { ButtonModule } from 'primeng/button';
+import { CheckboxModule } from 'primeng/checkbox';
+import { InputTextModule } from 'primeng/inputtext';
+import { PasswordModule } from 'primeng/password';
+import { firstValueFrom } from 'rxjs';
+import { ToggleValidationErrorAreaDirective } from '../../directives/toggle-validation-error-area.directive';
+import { SignupSchema } from './registration.models';
+
 @Component({
   selector: 'app-registration',
-  imports: [ReactiveFormsModule],
+  imports: [
+    ReactiveFormsModule,
+    ReactiveFormErrorMessageComponent,
+    PasswordModule,
+    CheckboxModule,
+    InputTextModule,
+    ButtonModule,
+    ToggleValidationErrorAreaDirective,
+  ],
   templateUrl: './registration.html',
   styleUrl: './registration.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -35,24 +50,25 @@ export class Registration {
         validators: [Validators.requiredTrue],
       }),
     },
-    { validators: [this.confirmPasswordValidator], updateOn: 'submit' }
+    { validators: [this.confirmPasswordValidator] }
   );
 
   async onSubmit() {
     const formValues = this.form.getRawValue();
 
     const parsed = SignupSchema.parse(formValues);
-    const response = await firstValueFrom(
-      this.httpClient.post('', { ...parsed }, { observe: 'response' })
-    );
+    console.log(parsed);
+    // const response = await firstValueFrom(
+    //   this.httpClient.post('', { ...parsed }, { observe: 'response' })
+    // );
 
-    if (response.status === HttpStatusCode.Conflict) {
-      this.form.controls.userName.setErrors({ duplicate: true });
-      this.form.controls.userName.updateValueAndValidity();
-    }
-    if (response.status === HttpStatusCode.Created || response.status === HttpStatusCode.Ok) {
-      this.router.navigateByUrl('login');
-    }
+    // if (response.status === HttpStatusCode.Conflict) {
+    //   this.form.controls.userName.setErrors({ duplicate: true });
+    //   this.form.controls.userName.updateValueAndValidity();
+    // }
+    // if (response.status === HttpStatusCode.Created || response.status === HttpStatusCode.Ok) {
+    //   this.router.navigateByUrl('login');
+    // }
   }
 
   confirmPasswordValidator(control: AbstractControl): ValidationErrors | null {

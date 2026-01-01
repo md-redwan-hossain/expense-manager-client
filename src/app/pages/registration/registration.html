@@ -1,1 +1,94 @@
-<p>registration works!</p>,
+<div class="bg-gray-50">
+  <div class="flex min-h-screen flex-col items-center justify-center px-4 py-6">
+    <div class="w-full max-w-md">
+      <div class="rounded-2xl bg-white p-8 shadow-sm">
+        <h2 class="text-center text-2xl font-bold text-gray-800">Registration</h2>
+        <form
+          [formGroup]="form"
+          (submit)="onSubmit()"
+          class="card flex flex-col items-center justify-center gap-4"
+        >
+          <div class="flex w-full flex-col gap-2">
+            <label for="username">Username</label>
+            <input pInputText [fluid]="true" id="username" [formControl]="form.controls.userName" />
+
+            <ng-container *ToggleValidationErrorArea="form.controls.userName">
+              <ngx-reactive-form-error-message
+                cssClass="text-red-400"
+                [formControlToBind]="form.controls.userName"
+                formControlLabel="Username"
+              />
+            </ng-container>
+          </div>
+
+          <div class="flex w-full flex-col gap-2">
+            <label for="password">Password</label>
+            <p-password
+              id="password"
+              [formControl]="form.controls.password"
+              [toggleMask]="true"
+              [fluid]="true"
+              feedback="false"
+            />
+
+            <ng-container *ToggleValidationErrorArea="form.controls.password">
+              <ngx-reactive-form-error-message
+                cssClass="text-red-400"
+                [formControlToBind]="form.controls.password"
+                formControlLabel="Password"
+              />
+            </ng-container>
+          </div>
+
+          <div class="flex w-full flex-col gap-2">
+            <label for="confirmPassword">Confirm Password</label>
+            <p-password
+              id="confirmPassword"
+              [formControl]="form.controls.confirmPassword"
+              [toggleMask]="true"
+              [fluid]="true"
+              feedback="false"
+            />
+
+            <ng-container *ToggleValidationErrorArea="form.controls.confirmPassword">
+              <ngx-reactive-form-error-message
+                cssClass="text-red-400"
+                [formControlToBind]="form.controls.confirmPassword"
+                formControlLabel="Confirm Password"
+              />
+            </ng-container>
+          </div>
+          <div class="flex w-full flex-col gap-2">
+            @if(form.controls.password.valid && form.controls.confirmPassword.valid
+            &&form.hasError("passwordsDoNotMatch")){
+            <span class="text-red-400">Password must match</span>
+            }
+          </div>
+
+          <div class="mb-1 flex w-full items-center justify-between">
+            <div class="flex items-center gap-2">
+              <p-checkbox
+                id="remember"
+                name="agreeWithTermsAndCondition"
+                inputId="agreeWithTermsAndCondition"
+                [value]="true"
+                [formControl]="form.controls.agreeWithTermsAndCondition"
+                [binary]="true"
+              />
+              <label for="remember" class="mt-1">Agree Terms & Conditions?</label>
+            </div>
+          </div>
+
+          <p-button
+            [disabled]="form.invalid || form.pristine"
+            type="submit"
+            raised
+            fluid
+            label="Submit"
+            class="block w-full"
+          />
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
